@@ -17,6 +17,10 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('test', function () {
-    echo 'hello dummy:D';
+Route::get('create/category', function () {  #callBack function
+    $Created_category = \App\Models\Category::find('1')->update([
+        'title' => 'amir',
+        'slug' => 'hossien-rasti'
+    ]);
+    dd($Created_category);
 });
