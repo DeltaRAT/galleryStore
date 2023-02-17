@@ -25,9 +25,17 @@ class CategoriesController extends Controller
     }
 
     public function all(){
-        $categories = Category::paginate(5);
+        $categories = Category::paginate(5);  #pagination
 
         return view('admin.categories.all', compact('categories'));
+    }
+
+    public function delete($category_id){
+        $category = Category::find($category_id);
+        $category->delete();
+
+        return back()->with('success','دسته بندی حذف شد');
+
     }
 
 }
