@@ -1,12 +1,11 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use \App\Http\Controllers\Admin\CategoriesController;
 
-Route::get('products/all', function () {  #callBack function
-    return view('frontend.products.all');
-});
-Route::get('admin/all', function () {  #callBack function
-    return view('admin.index');
-});Route::get('admin/users', function () {  #callBack function
-    return view('admin.users.index');
+Route::prefix('admin')->group(function(){
+   Route::prefix('categories')->group(function (){
+      Route::get('create',[CategoriesController::class, 'create']);
+      Route::post('',[CategoriesController::class, 'store'])->name('admin.categories.store');
+   });
 });
