@@ -2,25 +2,11 @@
 
 use Illuminate\Support\Facades\Route;
 
-/*
-|--------------------------------------------------------------------------
-| Web Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register web routes for your application. These
-| routes are loaded by the RouteServiceProvider and all of them will
-| be assigned to the "web" middleware group. Make something great!
-|
-*/
-
-Route::get('/', function () {
-    return view('welcome');
+Route::get('products/all', function () {  #callBack function
+    return view('frontend.products.all');
 });
-
-Route::get('create/category', function () {  #callBack function
-    $Created_category = \App\Models\Category::find('1')->update([
-        'title' => 'amir',
-        'slug' => 'hossien-rasti'
-    ]);
-    dd($Created_category);
+Route::get('admin/all', function () {  #callBack function
+    return view('admin.index');
+});Route::get('admin/users', function () {  #callBack function
+    return view('admin.users.index');
 });
