@@ -20,7 +20,7 @@ Route::prefix('admin')->group(function(){
        Route::post('',[ProductsController::class,'store'])->name('admin.products.store');
         Route::get('{product_id}/download/demo',[ProductsController::class,'downloadDemo'])->name('admin.products.download.demo');
         Route::get('{product_id}/download/source',[ProductsController::class,'downloadSource'])->name('admin.products.download.source');
-
+        Route::delete('{product_id}/delete',[ProductsController::class, 'delete'])->name('admin.products.delete');
    });
 });
 
