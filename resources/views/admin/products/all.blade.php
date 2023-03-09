@@ -74,8 +74,8 @@
                                             <td>{{$product->price}} تومان</td>
                                             <td>  {{$product->created_at}}}</td>
                                             <td>
-                                                <a href="#" class="btn btn-default btn-icons"><i class="fa fa-edit"></i></a>
-                                                <form action="{{route('admin.products.delete',$product->id)}}" method="post" style="display: inline-block">
+                                                <a href="{{ route('admin.products.edit',$product->id) }}" class="btn btn-default btn-icons"><i class="fa fa-edit"></i></a>
+                                                <form action="{{route('admin.products.delete',$product->id)}}" method="post" style="display: inline">
                                                     @csrf
                                                     @method('delete')
                                                     <button href=" " class="btn btn-default btn-icons"><i class="fa fa-trash"></i></button>
