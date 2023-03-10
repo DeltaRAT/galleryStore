@@ -14,4 +14,9 @@ class Order extends Model
     public function user(){
         $this->belongsTo('user');
     }
+
+    public function payment(){
+
+        return $this->belongsTo('payment');
+    }
 }
