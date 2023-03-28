@@ -87,7 +87,7 @@
                         <i class="zmdi zmdi-search"></i>
                     </div>
 
-                    <div class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 icon-header-noti js-show-cart" data-notify="۲">
+                    <div class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 icon-header-noti js-show-cart" data-notify="{{count(json_decode(\Illuminate\Support\Facades\Cookie::get('basket'),true))}}">
                         <i class="zmdi zmdi-shopping-cart"></i>
                     </div>
                 </div>
@@ -172,58 +172,31 @@
 
         <div class="header-cart-content flex-w js-pscroll">
             <ul class="header-cart-wrapitem w-full">
+                @if(\Illuminate\Support\Facades\Cookie::get('basket') !== null)
+                @foreach(json_decode(\Illuminate\Support\Facades\Cookie::get('basket'),true) as $id => $value)
                 <li class="header-cart-item flex-w flex-t m-b-12">
+                    <a href="{{route('home.basket.remove', $id)}}">
                     <div class="header-cart-item-img">
-                        <img src="/images/item-cart-01.jpg" alt="IMG">
+                        <img src="/{{$value['demo_url']}}" alt="IMG">
                     </div>
-
+                    </a>
                     <div class="header-cart-item-txt p-t-8">
                         <a href="single.php" class="header-cart-item-name m-b-18 hov-cl1 trans-04">
-                            کارت ویزیت وکیل
+                            {{$value['title']}}
                         </a>
 
                         <span class="header-cart-item-info">
-								۲۳ هزار تومان
+								{{$value['price']}}هزار تومان
 							</span>
                     </div>
                 </li>
-
-                <li class="header-cart-item flex-w flex-t m-b-12">
-                    <div class="header-cart-item-img">
-                        <img src="/images/item-cart-02.jpg" alt="IMG">
-                    </div>
-
-                    <div class="header-cart-item-txt p-t-8">
-                        <a href="single.php" class="header-cart-item-name m-b-18 hov-cl1 trans-04">
-                            تراکت فروشگاه کالای خانه
-                        </a>
-
-                        <span class="header-cart-item-info">
-								۱۲ هزار تومان
-							</span>
-                    </div>
-                </li>
-
-                <li class="header-cart-item flex-w flex-t m-b-12">
-                    <div class="header-cart-item-img">
-                        <img src="/images/item-cart-03.jpg" alt="IMG">
-                    </div>
-
-                    <div class="header-cart-item-txt p-t-8">
-                        <a href="single.php" class="header-cart-item-name m-b-18 hov-cl1 trans-04">
-                            وکتور بکگراند
-                        </a>
-
-                        <span class="header-cart-item-info">
-								۲ هزار تومان
-							</span>
-                    </div>
-                </li>
+                @endforeach
+                @endif
             </ul>
 
             <div class="w-full">
                 <div class="header-cart-total w-full p-tb-40">
-                    جمع کل: ۱۹ هزار تومان
+                    جمع کل: {{ array_sum(array_column(json_decode(\Illuminate\Support\Facades\Cookie::get('basket'),true),'price')) }} هزار تومان
                 </div>
 
                 <div class="header-cart-buttons flex-w w-full">
