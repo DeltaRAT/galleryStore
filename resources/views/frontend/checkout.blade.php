@@ -29,26 +29,18 @@
                                     <th class="column-2"></th>
                                     <th class="column-3">قیمت</th>
                                 </tr>
-
-                                <tr class="table_row">
-                                    <td class="column-1">
-                                        <div class="how-itemcart1">
-                                            <img src="images/item-cart-04.jpg" alt="IMG">
-                                        </div>
-                                    </td>
-                                    <td class="column-2">کارت ویزیت مشاور املاک</td>
-                                    <td class="column-3">۵۴ هزار تومان</td>
-                                </tr>
-
-                                <tr class="table_row">
-                                    <td class="column-1">
-                                        <div class="how-itemcart1">
-                                            <img src="images/item-cart-05.jpg" alt="IMG">
-                                        </div>
-                                    </td>
-                                    <td class="column-2">تراکت رستوران بیرون بر</td>
-                                    <td class="column-3">۷ هزار تومان</td>
-                                </tr>
+                                @foreach($products as $id => $product)
+                                    <tr class="table_row">
+                                        <td class="column-1">
+                                            <a href="{{route('home.checkout.delete', $id)}}">
+                                            <div class="how-itemcart1">
+                                                <img src="/{{ $product['demo_url'] }}" alt="IMG">
+                                            </div>
+                                            </a>
+                                        </td>
+                                        <td class="column-2">{{$product['title']}}</td>
+                                        <td class="column-3">{{$product['price']}} هزار تومان</td>
+                                    </tr>                                @endforeach
                             </table>
                         </div>
                         <!--کد تخفیف-->
@@ -104,7 +96,7 @@
 
                                 <div class="size-209 p-t-1">
 								<span class="mtext-110 cl2">
-									۴۵۰ هزار تومان
+									{{$productsPrice}} هزار تومان
 								</span>
                                 </div>
                             </div>
