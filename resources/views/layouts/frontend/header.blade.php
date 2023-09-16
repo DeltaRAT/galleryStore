@@ -87,7 +87,10 @@
                         <i class="zmdi zmdi-search"></i>
                     </div>
 
-                    <div class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 icon-header-noti js-show-cart" data-notify="{{count(json_decode(\Illuminate\Support\Facades\Cookie::get('basket'),true))}}">
+                    <div class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 icon-header-noti js-show-cart" data-notify="
+  @if(\Illuminate\Support\Facades\Cookie::get('basket') !== null)
+{{count(json_decode(\Illuminate\Support\Facades\Cookie::get('basket'),true))}}
+                    @endif">
                         <i class="zmdi zmdi-shopping-cart"></i>
                     </div>
                 </div>
@@ -196,7 +199,9 @@
 
             <div class="w-full">
                 <div class="header-cart-total w-full p-tb-40">
+                    @if(\Illuminate\Support\Facades\Cookie::get('basket') !== null)
                     جمع کل: {{ array_sum(array_column(json_decode(\Illuminate\Support\Facades\Cookie::get('basket'),true),'price')) }} هزار تومان
+                    @endif
                 </div>
 
                 <div class="header-cart-buttons flex-w w-full">
