@@ -34,6 +34,4 @@ class paymentService
     }
 }
 
-$idPayRequest = new IDPayRequest();
-$paymentService = new paymentService(paymentService::IDPAY, $idPayRequest);
-$paymentService->pay();
+
