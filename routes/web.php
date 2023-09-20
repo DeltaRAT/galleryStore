@@ -6,6 +6,7 @@ use App\Http\Controllers\Admin\UsersController;
 use App\Http\Controllers\Home\BasketController;
 use App\Http\Controllers\Home\CheckoutController;
 use App\Http\Controllers\Home\HomeController;
+use App\Http\Controllers\PaymentController;
 use Illuminate\Support\Facades\Route;
 use \App\Http\Controllers\Admin\CategoriesController;
 use \App\Http\Controllers\Admin\ProductsController;
@@ -19,6 +20,7 @@ Route::prefix('')->group(function (){
     Route::get('checkout',[CheckoutController::class, 'show'])->name('home.checkout');
     Route::get('{product_id}/removeFromCheckout', [CheckoutController::class, 'removeFromCheckout'])->name('home.checkout.delete');
 });
+
 Route::prefix('admin')->group(function(){
    Route::prefix('categories')->group(function (){
        Route::get('',[CategoriesController::class, 'all'])->name('admin.categories.all');
@@ -56,6 +58,10 @@ Route::prefix('admin')->group(function(){
    });
 });
 
+Route::prefix('payment')->group(function (){
+    Route::post('pay',[PaymentController::class, 'pay'])->name('payment.pay');
+    Route::post('callback',[PaymentController::class, 'callback'])->name('payment.callback');
+});
 
 
 

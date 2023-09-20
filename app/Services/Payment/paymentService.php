@@ -5,6 +5,7 @@ namespace App\Services\Payment;
 use App\Services\Payment\Contracts\RequestInterface;
 use App\Services\Payment\Exceptions\ProviderNotFoundException;
 use App\Services\Payment\Requests\IDPayRequest;
+use App\Sevices\Payment\Contracts\AbstractProviderInterface;
 
 class paymentService
 {
@@ -23,9 +24,9 @@ class paymentService
 
     private function findProvider()
     {
-        $className = 'App\\Services\\Payment\\Provider' . $this->providerName;
+        $className = 'App\\Services\\Payment\\Providers\\' . $this->providerName;
 
-        if (class_exists($className))
+        if (!class_exists($className))
         {
             throw new ProviderNotFoundException(' درگاه پرداخت انتخاب شده پیدا نشد');
         }
