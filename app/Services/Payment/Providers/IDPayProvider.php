@@ -11,7 +11,7 @@ class IDPayProvider extends AbstractProviderInterface implements PayableInterfac
 {
     public function pay()
     {
-        dd($this->request);
+
         $params = array(
             'order_id' => $this->request->getOrderId(),
             'amount' => $this->request->getAmount(),
@@ -27,14 +27,20 @@ class IDPayProvider extends AbstractProviderInterface implements PayableInterfac
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
         curl_setopt($ch, CURLOPT_HTTPHEADER, array(
             'Content-Type: application/json',
-            'X-API-KEY:' . $this->request->getAPIKey() . '',
+            'X-API-KEY:' . $this->request->getApiKey() . '',
             'X-SANDBOX: 1'  // باعث این می شود که فرایند پرداخت ما آزمایشی باشد و تست ها رو بتونیم انجام بدیم، در صورت لانچ حذف شود.
         ));
 
         $result = curl_exec($ch);
         curl_close($ch);
 
-        var_dump($result);
+        $result = json_decode($result, true);
+
+        if (isset($result['error_code'])){
+            throw new \InvalidArgumentException($result['error_message']);
+        }
+
+        return redirect()->away();
     }
 
     public function verify()

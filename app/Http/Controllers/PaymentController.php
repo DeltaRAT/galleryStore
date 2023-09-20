@@ -29,7 +29,11 @@ class PaymentController extends Controller
         try {
             $orderItems = json_decode(Cookie::get('basket'), true);
 
-                $products = Product::findMany(array_keys($orderItems));
+            if (count($orderItems) <= 0){
+                throw new \InvalidArgumentException('سبد خرید شما خالی است!');
+            }
+
+            $products = Product::findMany(array_keys($orderItems));
 
             $productsPrice = $products->sum('price');
 
@@ -42,8 +46,8 @@ class PaymentController extends Controller
                 'user_id' => $user->id
             ]);
 
-            $orderItemsForCreatedOrder = $products->map(function ($product){
-                $currentProduct = $product->only(['price','id']);
+            $orderItemsForCreatedOrder = $products->map(function ($product) {
+                $currentProduct = $product->only(['price', 'id']);
 
                 $currentProduct['product_id'] = $currentProduct['id'];
 
@@ -54,7 +58,7 @@ class PaymentController extends Controller
 
             $createdOrder->orderItems()->createMany($orderItemsForCreatedOrder->toArray());
 
-            $refId = rand(11111,99999);
+            $refId = rand(11111, 99999);
 
             $createdPayment = Payment::create([
                 'gateway' => 'idpay',
@@ -67,7 +71,8 @@ class PaymentController extends Controller
             $idPayRequest = new IDPayRequest([
                 'amount' => $productsPrice,
                 'user' => $user,
-                'order_id' => $ref_code
+                'order_id' => $ref_code,
+                'apiKey' => config('services.gateways.id_pay.api_key')
             ]);
             $paymentService = new paymentService(paymentService::IDPAY, $idPayRequest);
 
