@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('orders', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('amount');
-            $table->char('ref_code');
+            $table->char('ref_code', 128)->nullable();
             $table->enum('status',['unpaid, paid']);
             $table->unsignedBigInteger('user_id');
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');

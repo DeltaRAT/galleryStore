@@ -3,14 +3,17 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\Payment\PayRequest;
+use App\Mail\SendOrderedImages;
 use App\Models\Order;
 use App\Models\Payment;
 use App\Models\Product;
 use App\Models\User;
 use App\Services\Payment\paymentService;
 use App\Services\Payment\Requests\IDPayRequest;
+use App\Services\Payment\Requests\IDPayVerifyRequest;
 use Illuminate\Support\Facades\Cookie;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
 
 class PaymentController extends Controller
@@ -29,7 +32,7 @@ class PaymentController extends Controller
         try {
             $orderItems = json_decode(Cookie::get('basket'), true);
 
-            if (count($orderItems) <= 0){
+            if (count($orderItems) <= 0) {
                 throw new \InvalidArgumentException('سبد خرید شما خالی است!');
             }
 
@@ -56,14 +59,11 @@ class PaymentController extends Controller
                 return $currentProduct;
             });
 
-            $createdOrder->orderItems()->createMany($orderItemsForCreatedOrder->toArray());
-
-            $refId = rand(11111, 99999);
+            $createdOrder->orderItem()->createMany($orderItemsForCreatedOrder->toArray());
 
             $createdPayment = Payment::create([
                 'gateway' => 'idpay',
-                'ref_id' => $refId,
-                'res_id' => $refId,
+                'ref_code' => $ref_code,
                 'status' => 'unpaid',
                 'order_id' => $createdOrder->id
             ]);
@@ -84,8 +84,51 @@ class PaymentController extends Controller
 
     }
 
-    public function callback()
+    public function callback(Request $request)
     {
+        $paymentInfo = $request->all();
+
+        $idPayVerifyRequest = new IDPayVerifyRequest([
+            'id' => $paymentInfo['id'],
+            'order_id' => $paymentInfo['order_id'],
+            'apiKey' => config('services.gateways.id_pay.api_key')
+        ]);
+
+        $paymentService = new paymentService(paymentService::IDPAY, $idPayVerifyRequest);
+
+        $result = $paymentService->verify();
+
+        if (!$result['status'])
+        {
+            return redirect()->route('home.checkout')->with('failed', 'پرداخت شما انجام نشد');
+        }
+//        if ($result['statusCode'] == 101)
+//        {
+//            return redirect()->route('home.checkout')->with('failed','پرداخت انحام شده است و تصاویر برای شما ایمیل شده است!');
+//        }
+
+        $currentPayment = Payment::where('ref_code', $result['data']['order_id'])->first();
+
+        $currentPayment->update([
+            'status' => 'paid',
+            'res_id' => $result['data']['track_id']
+        ]);
+
+        $currentPayment->order()->update([
+            'status' => 'paid'
+        ]);
+
+        $currentUser = $currentPayment->order->user;
+
+         $reservedImages = $currentPayment->order->orderItem->map(function ($orderItem){
+             return $orderItem->product->source_url;
+         });
+
+         Mail::to($currentUser)->send(new SendOrderedImages($reservedImages->toArray(), $currentUser));
+
+         Cookie::queue('basket', null);
+
+         return redirect()->route('home.products.all')->with('success', 'پرداخت شما انجام شد و تصاویر برای شما ایمیل شدند');
 
     }
 }

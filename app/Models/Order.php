@@ -12,16 +12,18 @@ class Order extends Model
     protected $guarded = [];
 
     public function user(){
-        $this->belongsTo('user');
+        return $this->belongsTo(User::class);
     }
 
     public function payment(){
 
-        return $this->belongsTo('payment');
+        return $this->belongsTo(Payment::class);
     }
 
-    public function orderItems(){
-
+    public function orderItem(){
         return $this->hasMany(OrderItem::class);
     }
+
+
+
 }
